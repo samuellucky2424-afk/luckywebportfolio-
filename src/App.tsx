@@ -27,6 +27,9 @@ import Careers from './pages/company/Careers';
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import TermsOfService from './pages/legal/TermsOfService';
 
+// 404
+import NotFound from './pages/NotFound';
+
 function HomePage() {
   useLenis();
 
@@ -77,6 +80,8 @@ function App() {
         {/* Legal */}
         <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/legal/terms-of-service" element={<TermsOfService />} />
+        {/* 404 Catch-all */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

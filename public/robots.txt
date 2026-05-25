@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://luckyweb.site/sitemap.xml
+
+# Crawl rate (optional, helps with server load)
+Crawl-delay: 1
+
+# Disallow patterns (none for now - all pages are public)

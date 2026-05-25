@@ -1,17 +1,22 @@
 import { Link, useLocation } from 'react-router-dom';
 import { navigationConfig, footerConfig } from '../config';
+import SeoHead from '../components/SeoHead';
 
 interface PageLayoutProps {
   children: React.ReactNode;
   title: string;
   subtitle?: string;
+  description?: string;
+  keywords?: string;
 }
 
-export default function PageLayout({ children, title, subtitle }: PageLayoutProps) {
+export default function PageLayout({ children, title, subtitle, description, keywords }: PageLayoutProps) {
   const location = useLocation();
+  const seoDescription = description || subtitle || `${title} — Lucky Web provides premium software engineering services.`;
 
   return (
     <div style={{ backgroundColor: '#0a0f1a', minHeight: '100vh', color: '#e8e8ec' }}>
+      <SeoHead title={title} description={seoDescription} path={location.pathname} keywords={keywords} />
       {/* Simple Nav */}
       <nav
         style={{
