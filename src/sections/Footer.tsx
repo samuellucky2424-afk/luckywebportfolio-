@@ -3,7 +3,6 @@ import { footerConfig } from '../config';
 
 function FooterLink({ href, label }: { href: string; label: string }) {
   const isInternal = href.startsWith('/');
-  const isHash = href.startsWith('#');
 
   if (isInternal) {
     return (
