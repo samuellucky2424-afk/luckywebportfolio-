@@ -19,6 +19,7 @@ export default function PageLayout({ children, title, subtitle, description, key
       <SeoHead title={title} description={seoDescription} path={location.pathname} keywords={keywords} />
       {/* Simple Nav */}
       <nav
+        className="page-layout-nav"
         style={{
           position: 'sticky',
           top: 0,
@@ -29,6 +30,7 @@ export default function PageLayout({ children, title, subtitle, description, key
         }}
       >
         <div
+          className="page-layout-nav-inner"
           style={{
             maxWidth: '1200px',
             margin: '0 auto',
@@ -74,6 +76,7 @@ export default function PageLayout({ children, title, subtitle, description, key
 
       {/* Page Header */}
       <div
+        className="page-layout-header"
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
@@ -124,12 +127,13 @@ export default function PageLayout({ children, title, subtitle, description, key
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px 80px' }}>
+      <div className="page-layout-content" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px 80px' }}>
         {children}
       </div>
 
       {/* Simple Footer */}
       <footer
+        className="page-layout-footer"
         style={{
           backgroundColor: '#070b14',
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
@@ -149,6 +153,23 @@ export default function PageLayout({ children, title, subtitle, description, key
           {footerConfig.copyright}
         </p>
       </footer>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .page-layout-nav-inner {
+            padding: 12px 20px !important;
+          }
+          .page-layout-header {
+            padding: 60px 20px 32px !important;
+          }
+          .page-layout-content {
+            padding: 0 20px 60px !important;
+          }
+          .page-layout-footer {
+            padding: 32px 20px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

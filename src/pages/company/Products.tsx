@@ -19,12 +19,20 @@ export default function Products() {
         a.name && a.name.toLowerCase().includes('morphly-setup')
       );
       if (setupAsset && setupAsset.browser_download_url) {
-        const link = document.createElement('a');
-        link.href = setupAsset.browser_download_url;
-        link.download = setupAsset.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const url = setupAsset.browser_download_url;
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+          window.open(url, '_blank');
+        } else {
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = setupAsset.name;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       } else {
         throw new Error('morphly-setup asset not found in the latest release.');
       }
