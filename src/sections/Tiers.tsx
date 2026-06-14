@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { tiersConfig } from '../config';
@@ -9,6 +9,44 @@ export default function Tiers() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const tierRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tiers = tiersConfig.tiers;
+  const [downloadingTier, setDownloadingTier] = useState<string | null>(null);
+
+  const handleDownload = async (tierName: string) => {
+    setDownloadingTier(tierName);
+    try {
+      const response = await fetch('https://api.github.com/repos/samuellucky2424-afk/morphly/releases/latest');
+      if (!response.ok) {
+        throw new Error('Failed to fetch latest release information.');
+      }
+      const data = await response.json();
+      const assets = data.assets || [];
+      const setupAsset = assets.find((a: any) =>
+        a.name && a.name.toLowerCase().includes('morphly-setup')
+      );
+      if (setupAsset && setupAsset.browser_download_url) {
+        const url = setupAsset.browser_download_url;
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+          window.open(url, '_blank');
+        } else {
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = setupAsset.name;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } else {
+        throw new Error('morphly-setup asset not found in the latest release.');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Download failed. Please try again.');
+    } finally {
+      setDownloadingTier(null);
+    }
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -262,40 +300,83 @@ export default function Tiers() {
 
               {/* CTA Button */}
               {tier.ctaText && (
-                <a
-                  href={tier.ctaHref || '#'}
-                  onClick={(e) => {
-                    if (!tier.ctaHref || tier.ctaHref === '#') e.preventDefault();
-                  }}
-                  style={{
-                    display: 'inline-block',
-                    fontFamily: 'Inter, system-ui, sans-serif',
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: '#fcfaee',
-                    letterSpacing: '2px',
-                    textTransform: 'uppercase',
-                    textDecoration: 'none',
-                    padding: '14px 36px',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '4px',
-                    transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
-                  }}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget;
-                    el.style.backgroundColor = '#c9a66b';
-                    el.style.color = '#0a0f1a';
-                    el.style.borderColor = '#c9a66b';
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget;
-                    el.style.backgroundColor = 'transparent';
-                    el.style.color = '#fcfaee';
-                    el.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                  }}
-                >
-                  {tier.ctaText}
-                </a>
+                <>
+                  {tier.name === 'Morphly AI' ? (
+                    <button
+                      onClick={() => handleDownload(tier.name)}
+                      disabled={downloadingTier === tier.name}
+                      style={{
+                        display: 'inline-block',
+                        fontFamily: 'Inter, system-ui, sans-serif',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        color: '#fcfaee',
+                        letterSpacing: '2px',
+                        textTransform: 'uppercase',
+                        textDecoration: 'none',
+                        padding: '14px 36px',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        borderRadius: '4px',
+                        backgroundColor: 'transparent',
+                        cursor: downloadingTier === tier.name ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (downloadingTier !== tier.name) {
+                          const el = e.currentTarget;
+                          el.style.backgroundColor = '#c9a66b';
+                          el.style.color = '#0a0f1a';
+                          el.style.borderColor = '#c9a66b';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget;
+                        el.style.backgroundColor = 'transparent';
+                        el.style.color = '#fcfaee';
+                        el.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                      }}
+                    >
+                      {downloadingTier === tier.name ? 'Fetching latest version...' : tier.ctaText}
+                    </button>
+                  ) : (
+                    <a
+                      href={tier.ctaHref || '#'}
+                      target={tier.ctaHref?.startsWith('http') ? '_blank' : undefined}
+                      rel={tier.ctaHref?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      onClick={(e) => {
+                        if (!tier.ctaHref || tier.ctaHref === '#') e.preventDefault();
+                      }}
+                      style={{
+                        display: 'inline-block',
+                        fontFamily: 'Inter, system-ui, sans-serif',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        color: '#fcfaee',
+                        letterSpacing: '2px',
+                        textTransform: 'uppercase',
+                        textDecoration: 'none',
+                        padding: '14px 36px',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        borderRadius: '4px',
+                        transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
+                      }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget;
+                        el.style.backgroundColor = '#c9a66b';
+                        el.style.color = '#0a0f1a';
+                        el.style.borderColor = '#c9a66b';
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget;
+                        el.style.backgroundColor = 'transparent';
+                        el.style.color = '#fcfaee';
+                        el.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                      }}
+                    >
+                      {tier.ctaText}
+                    </a>
+                  )}
+                </>
               )}
             </div>
           </div>
