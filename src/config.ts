@@ -203,6 +203,23 @@ export const tiersConfig: TiersConfig = {
       ctaText: "Live Preview",
       ctaHref: "https://gym-zeta-black.vercel.app/#",
     },
+    {
+      name: "Morphly AI",
+      price: "2025",
+      frequency: "AI / Desktop",
+      journeys: "Face Animation / Live Avatar",
+      image: "images/project-morphly.jpg",
+      description: "A real-time AI-powered face animation app that transforms a single photo into a live, expressive digital avatar. Features realistic facial expressions, lip-sync, eye blinking, and head motion — powered by advanced facial motion technology.",
+      amenities: [
+        "Real-time face animation",
+        "AI-powered live camera",
+        "Single-photo avatar creation",
+        "Desktop & mobile support",
+        "Pay-as-you-go credit system",
+      ],
+      ctaText: "Download",
+      ctaHref: "/company/products",
+    },
   ],
 }
 
