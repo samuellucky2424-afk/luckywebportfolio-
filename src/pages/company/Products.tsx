@@ -44,36 +44,22 @@ export default function Products() {
     }
   };
 
-  const handleAndroidDownload = async () => {
+  const handleAndroidDownload = () => {
     setDownloadingAndroid(true);
     setDownloadError('');
     try {
-      const response = await fetch('https://api.github.com/repos/samuellucky2424-afk/morphly/releases/latest');
-      if (!response.ok) {
-        throw new Error('Failed to fetch latest release information.');
-      }
-      const data = await response.json();
-      const assets = data.assets || [];
-      const apkAsset = assets.find((a: any) =>
-        a.name && a.name.toLowerCase().endsWith('.apk')
-      );
-      if (apkAsset && apkAsset.browser_download_url) {
-        const url = apkAsset.browser_download_url;
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = apkAsset.name;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        throw new Error('Android APK not found in the latest release.');
-      }
+      const link = document.createElement('a');
+      link.href = 'android_version/morphly-latest.apk';
+      link.download = 'morphly-latest.apk';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (err: any) {
       setDownloadError(err.message || 'Download failed. Please try again.');
     } finally {
-      setDownloadingAndroid(false);
+      setTimeout(() => setDownloadingAndroid(false), 1000);
     }
   };
 
