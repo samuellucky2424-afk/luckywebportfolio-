@@ -11,6 +11,7 @@ export default function Tiers() {
   const tiers = tiersConfig.tiers;
   const [downloadingTier, setDownloadingTier] = useState<string | null>(null);
   const [downloadingAndroid, setDownloadingAndroid] = useState(false);
+  const [downloadingIOS, setDownloadingIOS] = useState(false);
 
   const handleDownload = async (tierName: string) => {
     setDownloadingTier(tierName);
@@ -77,6 +78,37 @@ export default function Tiers() {
       alert(err.message || 'Download failed. Please try again.');
     } finally {
       setDownloadingAndroid(false);
+    }
+  };
+
+  const handleIOSDownload = async () => {
+    setDownloadingIOS(true);
+    try {
+      const response = await fetch('https://api.github.com/repos/samuellucky2424-afk/morphly/releases/latest');
+      if (!response.ok) {
+        throw new Error('Failed to fetch latest release information.');
+      }
+      const data = await response.json();
+      const assets = data.assets || [];
+      const ipaAsset = assets.find((a: any) =>
+        a.name && a.name.toLowerCase().endsWith('.ipa')
+      );
+      if (ipaAsset && ipaAsset.browser_download_url) {
+        const link = document.createElement('a');
+        link.href = ipaAsset.browser_download_url;
+        link.download = ipaAsset.name;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        throw new Error('iOS IPA not found in the latest release.');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Download failed. Please try again.');
+    } finally {
+      setDownloadingIOS(false);
     }
   };
 
@@ -404,6 +436,40 @@ export default function Tiers() {
                         }}
                       >
                         {downloadingAndroid ? 'Fetching APK...' : 'Download Android'}
+                      </button>
+                      <button
+                        onClick={handleIOSDownload}
+                        disabled={downloadingIOS}
+                        style={{
+                          display: 'inline-block',
+                          fontFamily: 'Inter, system-ui, sans-serif',
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          color: '#0a0f1a',
+                          letterSpacing: '2px',
+                          textTransform: 'uppercase',
+                          textDecoration: 'none',
+                          padding: '14px 36px',
+                          border: '1px solid #3b82f6',
+                          borderRadius: '4px',
+                          backgroundColor: '#3b82f6',
+                          cursor: downloadingIOS ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!downloadingIOS) {
+                            const el = e.currentTarget;
+                            el.style.backgroundColor = '#2563eb';
+                            el.style.borderColor = '#2563eb';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget;
+                          el.style.backgroundColor = '#3b82f6';
+                          el.style.borderColor = '#3b82f6';
+                        }}
+                      >
+                        {downloadingIOS ? 'Fetching IPA...' : 'Download iOS'}
                       </button>
                     </div>
                   ) : (
