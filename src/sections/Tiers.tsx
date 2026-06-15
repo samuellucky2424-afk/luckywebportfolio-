@@ -10,6 +10,7 @@ export default function Tiers() {
   const tierRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tiers = tiersConfig.tiers;
   const [downloadingTier, setDownloadingTier] = useState<string | null>(null);
+  const [downloadingAndroid, setDownloadingAndroid] = useState(false);
 
   const handleDownload = async (tierName: string) => {
     setDownloadingTier(tierName);
@@ -45,6 +46,37 @@ export default function Tiers() {
       alert(err.message || 'Download failed. Please try again.');
     } finally {
       setDownloadingTier(null);
+    }
+  };
+
+  const handleAndroidDownload = async () => {
+    setDownloadingAndroid(true);
+    try {
+      const response = await fetch('https://api.github.com/repos/samuellucky2424-afk/morphly/releases/latest');
+      if (!response.ok) {
+        throw new Error('Failed to fetch latest release information.');
+      }
+      const data = await response.json();
+      const assets = data.assets || [];
+      const apkAsset = assets.find((a: any) =>
+        a.name && a.name.toLowerCase().endsWith('.apk')
+      );
+      if (apkAsset && apkAsset.browser_download_url) {
+        const link = document.createElement('a');
+        link.href = apkAsset.browser_download_url;
+        link.download = apkAsset.name;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        throw new Error('Android APK not found in the latest release.');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Download failed. Please try again.');
+    } finally {
+      setDownloadingAndroid(false);
     }
   };
 
@@ -302,42 +334,78 @@ export default function Tiers() {
               {tier.ctaText && (
                 <>
                   {tier.name === 'Morphly AI' ? (
-                    <button
-                      onClick={() => handleDownload(tier.name)}
-                      disabled={downloadingTier === tier.name}
-                      style={{
-                        display: 'inline-block',
-                        fontFamily: 'Inter, system-ui, sans-serif',
-                        fontSize: '11px',
-                        fontWeight: 600,
-                        color: '#fcfaee',
-                        letterSpacing: '2px',
-                        textTransform: 'uppercase',
-                        textDecoration: 'none',
-                        padding: '14px 36px',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                        borderRadius: '4px',
-                        backgroundColor: 'transparent',
-                        cursor: downloadingTier === tier.name ? 'not-allowed' : 'pointer',
-                        transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (downloadingTier !== tier.name) {
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <button
+                        onClick={() => handleDownload(tier.name)}
+                        disabled={downloadingTier === tier.name}
+                        style={{
+                          display: 'inline-block',
+                          fontFamily: 'Inter, system-ui, sans-serif',
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          color: '#fcfaee',
+                          letterSpacing: '2px',
+                          textTransform: 'uppercase',
+                          textDecoration: 'none',
+                          padding: '14px 36px',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          borderRadius: '4px',
+                          backgroundColor: 'transparent',
+                          cursor: downloadingTier === tier.name ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (downloadingTier !== tier.name) {
+                            const el = e.currentTarget;
+                            el.style.backgroundColor = '#c9a66b';
+                            el.style.color = '#0a0f1a';
+                            el.style.borderColor = '#c9a66b';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
                           const el = e.currentTarget;
-                          el.style.backgroundColor = '#c9a66b';
-                          el.style.color = '#0a0f1a';
-                          el.style.borderColor = '#c9a66b';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        const el = e.currentTarget;
-                        el.style.backgroundColor = 'transparent';
-                        el.style.color = '#fcfaee';
-                        el.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                      }}
-                    >
-                      {downloadingTier === tier.name ? 'Fetching latest version...' : tier.ctaText}
-                    </button>
+                          el.style.backgroundColor = 'transparent';
+                          el.style.color = '#fcfaee';
+                          el.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                        }}
+                      >
+                        {downloadingTier === tier.name ? 'Fetching...' : 'Download Desktop'}
+                      </button>
+                      <button
+                        onClick={handleAndroidDownload}
+                        disabled={downloadingAndroid}
+                        style={{
+                          display: 'inline-block',
+                          fontFamily: 'Inter, system-ui, sans-serif',
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          color: '#0a0f1a',
+                          letterSpacing: '2px',
+                          textTransform: 'uppercase',
+                          textDecoration: 'none',
+                          padding: '14px 36px',
+                          border: '1px solid #22c55e',
+                          borderRadius: '4px',
+                          backgroundColor: '#22c55e',
+                          cursor: downloadingAndroid ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!downloadingAndroid) {
+                            const el = e.currentTarget;
+                            el.style.backgroundColor = '#16a34a';
+                            el.style.borderColor = '#16a34a';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget;
+                          el.style.backgroundColor = '#22c55e';
+                          el.style.borderColor = '#22c55e';
+                        }}
+                      >
+                        {downloadingAndroid ? 'Fetching APK...' : 'Download Android'}
+                      </button>
+                    </div>
                   ) : (
                     <a
                       href={tier.ctaHref || '#'}

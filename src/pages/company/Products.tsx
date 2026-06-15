@@ -3,6 +3,7 @@ import PageLayout from '../PageLayout';
 
 export default function Products() {
   const [downloading, setDownloading] = useState(false);
+  const [downloadingAndroid, setDownloadingAndroid] = useState(false);
   const [downloadError, setDownloadError] = useState('');
 
   const handleDownload = async () => {
@@ -40,6 +41,39 @@ export default function Products() {
       setDownloadError(err.message || 'Download failed. Please try again.');
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleAndroidDownload = async () => {
+    setDownloadingAndroid(true);
+    setDownloadError('');
+    try {
+      const response = await fetch('https://api.github.com/repos/samuellucky2424-afk/morphly/releases/latest');
+      if (!response.ok) {
+        throw new Error('Failed to fetch latest release information.');
+      }
+      const data = await response.json();
+      const assets = data.assets || [];
+      const apkAsset = assets.find((a: any) =>
+        a.name && a.name.toLowerCase().endsWith('.apk')
+      );
+      if (apkAsset && apkAsset.browser_download_url) {
+        const url = apkAsset.browser_download_url;
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = apkAsset.name;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        throw new Error('Android APK not found in the latest release.');
+      }
+    } catch (err: any) {
+      setDownloadError(err.message || 'Download failed. Please try again.');
+    } finally {
+      setDownloadingAndroid(false);
     }
   };
 
@@ -87,14 +121,16 @@ export default function Products() {
             <p style={{ margin: 0 }}>
               Morphly AI uses a pay-as-you-go credit system. Credits are only consumed while the live animation is running, allowing users to pay only for the time they use.
             </p>
-            <h3 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '18px', color: '#fcfaee', marginBottom: '8px', marginTop: '16px' }}>Mobile App Coming Soon</h3>
+            <h3 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '18px', color: '#fcfaee', marginBottom: '8px', marginTop: '16px' }}>Mobile App Available</h3>
             <p style={{ margin: 0 }}>
-              We are currently developing the official Android and iPhone versions of Morphly AI. Soon, users will be able to enjoy the full live AI camera experience directly from their smartphones with improved performance and a more seamless user experience.
+              The official Android version of Morphly AI is now available. Download the APK and enjoy the full live AI camera experience directly from your smartphone with improved performance and a seamless user experience.
             </p>
             <p style={{ marginTop: '12px', marginBottom: 0, fontStyle: 'italic' }}>
               Whether you&apos;re a content creator, streamer, influencer, educator, or simply exploring AI technology, Morphly AI provides an innovative way to create engaging live animated content from a single photo.
             </p>
           </div>
+
+          {/* Desktop Download */}
           <div style={{ marginTop: '24px' }}>
             <button
               onClick={handleDownload}
@@ -124,14 +160,64 @@ export default function Products() {
                 }
               }}
             >
-              {downloading ? 'Fetching latest version...' : 'Download Morphly AI'}
+              {downloading ? 'Fetching latest version...' : 'Download Morphly AI (Desktop)'}
             </button>
-            {downloadError && (
-              <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '13px', color: '#ef4444', marginTop: '12px' }}>
-                {downloadError}
-              </p>
-            )}
           </div>
+
+          {/* Android Download */}
+          <div style={{ marginTop: '32px', padding: '24px', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
+            <h4 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '20px', color: '#fcfaee', marginBottom: '12px', marginTop: 0 }}>
+              Morphly AI for Android
+            </h4>
+            <img
+              src="images/morphly_apk.jpg"
+              alt="Morphly AI Android App"
+              style={{
+                width: '100%',
+                maxWidth: '400px',
+                borderRadius: '8px',
+                marginBottom: '16px',
+                display: 'block',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+              }}
+            />
+            <button
+              onClick={handleAndroidDownload}
+              disabled={downloadingAndroid}
+              style={{
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontSize: '13px',
+                fontWeight: 600,
+                color: '#0a0f1a',
+                backgroundColor: downloadingAndroid ? '#475569' : '#22c55e',
+                padding: '12px 28px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: downloadingAndroid ? 'not-allowed' : 'pointer',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                transition: 'background-color 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                if (!downloadingAndroid) {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#16a34a';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!downloadingAndroid) {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#22c55e';
+                }
+              }}
+            >
+              {downloadingAndroid ? 'Fetching APK...' : 'Download Android APK'}
+            </button>
+          </div>
+
+          {downloadError && (
+            <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '13px', color: '#ef4444', marginTop: '12px' }}>
+              {downloadError}
+            </p>
+          )}
         </section>
 
         <section>
