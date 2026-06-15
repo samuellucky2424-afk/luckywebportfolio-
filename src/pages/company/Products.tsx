@@ -4,7 +4,6 @@ import PageLayout from '../PageLayout';
 export default function Products() {
   const [downloading, setDownloading] = useState(false);
   const [downloadingAndroid, setDownloadingAndroid] = useState(false);
-  const [downloadingIOS, setDownloadingIOS] = useState(false);
   const [downloadError, setDownloadError] = useState('');
 
   const handleDownload = async () => {
@@ -75,39 +74,6 @@ export default function Products() {
       setDownloadError(err.message || 'Download failed. Please try again.');
     } finally {
       setDownloadingAndroid(false);
-    }
-  };
-
-  const handleIOSDownload = async () => {
-    setDownloadingIOS(true);
-    setDownloadError('');
-    try {
-      const response = await fetch('https://api.github.com/repos/samuellucky2424-afk/morphly/releases/latest');
-      if (!response.ok) {
-        throw new Error('Failed to fetch latest release information.');
-      }
-      const data = await response.json();
-      const assets = data.assets || [];
-      const ipaAsset = assets.find((a: any) =>
-        a.name && a.name.toLowerCase().endsWith('.ipa')
-      );
-      if (ipaAsset && ipaAsset.browser_download_url) {
-        const url = ipaAsset.browser_download_url;
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = ipaAsset.name;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        throw new Error('iOS IPA not found in the latest release.');
-      }
-    } catch (err: any) {
-      setDownloadError(err.message || 'Download failed. Please try again.');
-    } finally {
-      setDownloadingIOS(false);
     }
   };
 
@@ -198,14 +164,14 @@ export default function Products() {
             </button>
           </div>
 
-          {/* Mobile Downloads */}
+          {/* Android Download */}
           <div style={{ marginTop: '32px', padding: '24px', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', backgroundColor: 'rgba(255, 255, 255, 0.02)' }}>
             <h4 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '20px', color: '#fcfaee', marginBottom: '12px', marginTop: 0 }}>
-              Morphly AI for Mobile
+              Morphly AI for Android
             </h4>
             <img
               src="images/morphly_apk.jpg"
-              alt="Morphly AI Mobile App"
+              alt="Morphly AI Android App"
               style={{
                 width: '100%',
                 maxWidth: '400px',
@@ -215,68 +181,36 @@ export default function Products() {
                 border: '1px solid rgba(255, 255, 255, 0.06)',
               }}
             />
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <button
-                onClick={handleAndroidDownload}
-                disabled={downloadingAndroid}
-                style={{
-                  fontFamily: 'Inter, system-ui, sans-serif',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  color: '#0a0f1a',
-                  backgroundColor: downloadingAndroid ? '#475569' : '#22c55e',
-                  padding: '12px 28px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: downloadingAndroid ? 'not-allowed' : 'pointer',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  transition: 'background-color 0.3s ease',
-                }}
-                onMouseEnter={(e) => {
-                  if (!downloadingAndroid) {
-                    (e.target as HTMLButtonElement).style.backgroundColor = '#16a34a';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!downloadingAndroid) {
-                    (e.target as HTMLButtonElement).style.backgroundColor = '#22c55e';
-                  }
-                }}
-              >
-                {downloadingAndroid ? 'Fetching APK...' : 'Download Android APK'}
-              </button>
-              <button
-                onClick={handleIOSDownload}
-                disabled={downloadingIOS}
-                style={{
-                  fontFamily: 'Inter, system-ui, sans-serif',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  color: '#0a0f1a',
-                  backgroundColor: downloadingIOS ? '#475569' : '#3b82f6',
-                  padding: '12px 28px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: downloadingIOS ? 'not-allowed' : 'pointer',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  transition: 'background-color 0.3s ease',
-                }}
-                onMouseEnter={(e) => {
-                  if (!downloadingIOS) {
-                    (e.target as HTMLButtonElement).style.backgroundColor = '#2563eb';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!downloadingIOS) {
-                    (e.target as HTMLButtonElement).style.backgroundColor = '#3b82f6';
-                  }
-                }}
-              >
-                {downloadingIOS ? 'Fetching IPA...' : 'Download iOS IPA'}
-              </button>
-            </div>
+            <button
+              onClick={handleAndroidDownload}
+              disabled={downloadingAndroid}
+              style={{
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontSize: '13px',
+                fontWeight: 600,
+                color: '#0a0f1a',
+                backgroundColor: downloadingAndroid ? '#475569' : '#22c55e',
+                padding: '12px 28px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: downloadingAndroid ? 'not-allowed' : 'pointer',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                transition: 'background-color 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                if (!downloadingAndroid) {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#16a34a';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!downloadingAndroid) {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#22c55e';
+                }
+              }}
+            >
+              {downloadingAndroid ? 'Fetching APK...' : 'Download Android APK'}
+            </button>
           </div>
 
           {downloadError && (
