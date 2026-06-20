@@ -51,15 +51,13 @@ export default function Products() {
       const link = document.createElement('a');
       link.href = 'https://github.com/samuellucky2424-afk/morphly-apk/releases/download/v1.0.0/morphly.apk';
       link.download = 'morphly-latest.apk';
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (err: any) {
       setDownloadError(err.message || 'Download failed. Please try again.');
     } finally {
-      setTimeout(() => setDownloadingAndroid(false), 1000);
+      setTimeout(() => setDownloadingAndroid(false), 2500);
     }
   };
 
