@@ -53,7 +53,7 @@ export default function Tiers() {
     setDownloadingAndroid(true);
     try {
       const link = document.createElement('a');
-      link.href = 'android_version/morphly-latest.apk';
+      link.href = 'https://drive.google.com/uc?export=download&id=1yLKGLe8Fb4pxgDT6ZsJNxKXHihJDuSMz';
       link.download = 'morphly-latest.apk';
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
