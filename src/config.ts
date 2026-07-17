@@ -220,6 +220,23 @@ export const tiersConfig: TiersConfig = {
       ctaText: "Download",
       ctaHref: "/company/products",
     },
+    {
+      name: "Morphly Voice Changer",
+      price: "2025",
+      frequency: "AI / Voice",
+      journeys: "Real-Time Voice Transformation",
+      image: "images/morphly-voice.jpg",
+      description: "A real-time AI voice studio that transforms your voice during streaming, recording, or live chat. Features dual-engine architecture with RVC for high-performance NVIDIA systems and Beatrice V2 for low-end and high-end laptops alike.",
+      amenities: [
+        "RVC engine for high-performance GPUs",
+        "Beatrice V2 engine for all laptop tiers",
+        "Virtual-cable microphone support",
+        "Works with YouTube, Instagram, TikTok",
+        "Pay-as-you-go credit system",
+      ],
+      ctaText: "Download",
+      ctaHref: "/company/products",
+    },
   ],
 }
 

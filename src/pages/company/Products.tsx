@@ -4,6 +4,7 @@ import PageLayout from '../PageLayout';
 export default function Products() {
   const [downloading, setDownloading] = useState(false);
   const [downloadingAndroid, setDownloadingAndroid] = useState(false);
+  const [downloadingVoice, setDownloadingVoice] = useState(false);
   const [downloadError, setDownloadError] = useState('');
 
   const handleDownload = async () => {
@@ -56,6 +57,23 @@ export default function Products() {
       setDownloadError(err.message || 'Download failed. Please try again.');
     } finally {
       setTimeout(() => setDownloadingAndroid(false), 2500);
+    }
+  };
+
+  const handleVoiceDownload = () => {
+    setDownloadingVoice(true);
+    setDownloadError('');
+    try {
+      const link = document.createElement('a');
+      link.href = 'https://github.com/samuellucky2424-afk/morphly-voice-/releases/download/v0.2.0/Morphly-Voice-Setup-0.2.0.exe';
+      link.download = 'Morphly-Voice-Setup-0.2.0.exe';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err: any) {
+      setDownloadError(err.message || 'Download failed. Please try again.');
+    } finally {
+      setTimeout(() => setDownloadingVoice(false), 2500);
     }
   };
 
@@ -200,6 +218,78 @@ export default function Products() {
               {downloadError}
             </p>
           )}
+        </section>
+
+        <section>
+          <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '28px', color: '#fcfaee', marginBottom: '20px' }}>
+            Morphly Voice Changer
+          </h2>
+          <p style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '15px', color: '#94a3b8', lineHeight: 1.8, maxWidth: '800px', marginBottom: '16px' }}>
+            Morphly Voice Changer is a real-time AI voice studio that transforms your voice while you stream, record, or chat. Built with two powerful inference engines, it gives you the flexibility to choose the right performance profile for your hardware.
+          </p>
+          <div style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '14px', color: '#94a3b8', lineHeight: 1.8, maxWidth: '800px', marginBottom: '16px' }}>
+            <h3 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '18px', color: '#fcfaee', marginBottom: '8px', marginTop: '16px' }}>Key Features</h3>
+            <ul style={{ paddingLeft: '20px', margin: 0 }}>
+              <li>Dual-engine architecture: RVC and Beatrice V2</li>
+              <li>RVC engine for high-performance laptops with NVIDIA graphics</li>
+              <li>Beatrice V2 engine for both low-end and high-end laptops</li>
+              <li>Virtual-cable microphone support for streaming platforms</li>
+              <li>Compatible with YouTube, Instagram, TikTok, and other live apps</li>
+              <li>Pay-as-you-go credit system</li>
+            </ul>
+            <h3 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '18px', color: '#fcfaee', marginBottom: '8px', marginTop: '16px' }}>How It Works</h3>
+            <ol style={{ paddingLeft: '20px', margin: 0 }}>
+              <li>Download and install Morphly Voice Changer.</li>
+              <li>Create your account and load credits.</li>
+              <li>Select your preferred voice model and engine.</li>
+              <li>Set up your virtual cable microphone.</li>
+              <li>Connect to your streaming platform and start speaking.</li>
+            </ol>
+          </div>
+          <img
+            src="images/morphly-voice.jpg"
+            alt="Morphly Voice Changer Dashboard"
+            style={{
+              width: '100%',
+              maxWidth: '600px',
+              borderRadius: '8px',
+              marginBottom: '16px',
+              display: 'block',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+            }}
+          />
+          <div style={{ marginTop: '8px' }}>
+            <button
+              onClick={handleVoiceDownload}
+              disabled={downloadingVoice}
+              style={{
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontSize: '13px',
+                fontWeight: 600,
+                color: '#0a0f1a',
+                backgroundColor: downloadingVoice ? '#475569' : '#c9a66b',
+                padding: '12px 28px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: downloadingVoice ? 'not-allowed' : 'pointer',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                transition: 'background-color 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                if (!downloadingVoice) {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#b8945a';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!downloadingVoice) {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#c9a66b';
+                }
+              }}
+            >
+              {downloadingVoice ? 'Fetching installer...' : 'Download Morphly Voice Changer'}
+            </button>
+          </div>
         </section>
 
         <section>
