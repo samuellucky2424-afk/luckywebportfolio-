@@ -65,8 +65,8 @@ export default function Products() {
     setDownloadError('');
     try {
       const link = document.createElement('a');
-      link.href = 'https://github.com/samuellucky2424-afk/morphly-voice-/releases/download/v0.2.0/Morphly-Voice-Setup-0.2.0.exe';
-      link.download = 'Morphly-Voice-Setup-0.2.0.exe';
+      link.href = 'https://github.com/samuellucky2424-afk/morphly-voice-/releases/download/untagged-eb5d5bc97bcc4e542805/Morphly-Voice-Setup-0.2.1.exe';
+      link.download = 'Morphly-Voice-Setup-0.2.1.exe';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
