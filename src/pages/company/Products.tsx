@@ -60,21 +60,27 @@ export default function Products() {
     }
   };
 
-  const handleVoiceDownload = () => {
+  const handleVoiceDownload = async () => {
     setDownloadingVoice(true);
     setDownloadError('');
     try {
       const url = 'https://github.com/samuellucky2424-afk/morphly-voice-/releases/download/untagged-eb5d5bc97bcc4e542805/Morphly-Voice-Setup-0.2.1.exe';
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = url;
-      document.body.appendChild(iframe);
-      setTimeout(() => {
-        document.body.removeChild(iframe);
-        setDownloadingVoice(false);
-      }, 4000);
+      const response = await fetch(url, { credentials: 'omit' });
+      if (!response.ok) {
+        throw new Error('Failed to fetch installer. Please check the release URL.');
+      }
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'Morphly-Voice-Setup-0.2.1.exe';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
     } catch (err: any) {
       setDownloadError(err.message || 'Download failed. Please try again.');
+    } finally {
       setDownloadingVoice(false);
     }
   };
