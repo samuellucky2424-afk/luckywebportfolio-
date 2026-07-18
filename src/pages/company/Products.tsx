@@ -64,16 +64,18 @@ export default function Products() {
     setDownloadingVoice(true);
     setDownloadError('');
     try {
-      const link = document.createElement('a');
-      link.href = 'https://github.com/samuellucky2424-afk/morphly-voice-/releases/download/untagged-eb5d5bc97bcc4e542805/Morphly-Voice-Setup-0.2.1.exe';
-      link.download = 'Morphly-Voice-Setup-0.2.1.exe';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const url = 'https://github.com/samuellucky2424-afk/morphly-voice-/releases/download/untagged-eb5d5bc97bcc4e542805/Morphly-Voice-Setup-0.2.1.exe';
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+        setDownloadingVoice(false);
+      }, 4000);
     } catch (err: any) {
       setDownloadError(err.message || 'Download failed. Please try again.');
-    } finally {
-      setTimeout(() => setDownloadingVoice(false), 2500);
+      setDownloadingVoice(false);
     }
   };
 
