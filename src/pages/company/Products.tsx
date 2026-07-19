@@ -60,16 +60,29 @@ export default function Products() {
     }
   };
 
-  const handleVoiceDownload = () => {
+  const handleVoiceDownload = async () => {
     setDownloadingVoice(true);
     setDownloadError('');
     try {
-      const link = document.createElement('a');
-      link.href = 'https://github.com/samuellucky2424-afk/morphly-voice-/releases/download/v0.2.1/Morphly-Voice-Setup-0.2.1.exe';
-      link.download = 'Morphly-Voice-Setup-0.2.1.exe';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const response = await fetch('https://api.github.com/repos/samuellucky2424-afk/morphly-voice-/releases/latest');
+      if (!response.ok) {
+        throw new Error('Failed to fetch latest release information.');
+      }
+      const data = await response.json();
+      const assets = data.assets || [];
+      const setupAsset = assets.find((a: any) =>
+        a.name && a.name.toLowerCase().includes('voice-setup')
+      );
+      if (setupAsset && setupAsset.browser_download_url) {
+        const link = document.createElement('a');
+        link.href = setupAsset.browser_download_url;
+        link.download = setupAsset.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        throw new Error('Morphly Voice installer not found in the latest release.');
+      }
     } catch (err: any) {
       setDownloadError(err.message || 'Download failed. Please try again.');
     } finally {
